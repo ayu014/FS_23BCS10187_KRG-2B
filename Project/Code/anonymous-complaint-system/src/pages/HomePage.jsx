@@ -35,7 +35,7 @@ const HomePage = () => {
       <header style={styles.header}>
         <h1 style={styles.title}>Welcome to the Anonymous Complaint Readdressal System</h1>
         <p style={styles.subtitle}>
-          [cite_start]A secure and transparent platform to voice your concerns without fear of retaliation[cite: 12, 13].
+          A secure and transparent platform to voice your concerns without fear of retaliation.
         </p>
       </header>
 
@@ -56,7 +56,7 @@ const HomePage = () => {
           onMouseLeave={() => setCard2Hovered(false)}
         >
           <h2 style={styles.cardTitle}>Track Your Complaint</h2>
-          [cite_start]<p>Check the real-time progress of your submitted complaint using its unique ID[cite: 18].</p>
+          <p>Check the real-time progress of your submitted complaint using its unique ID.</p>
         </Link>
       </div>
     </div>

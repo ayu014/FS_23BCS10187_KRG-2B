@@ -1,18 +1,21 @@
 // src/routes/AppRoutes.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// Layout
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
+
+// Pages
 import HomePage from '../pages/HomePage';
-// We will import other pages here as we create them
+import SubmitComplaintPage from '../pages/SubmitComplaintPage';
+import TrackStatusPage from '../pages/TrackStatusPage';
+import AdminLoginPage from '../pages/AdminLoginPage';
+import AdminDashboardPage from '../pages/AdminDashboardPage';
 
 const AppRoutes = () => {
   const styles = {
-    container: {
-      maxWidth: '1140px',
-      margin: '0 auto',
-      padding: '2rem 1rem',
-    }
+    container: { maxWidth: '1140px', margin: '0 auto', padding: '2rem 1rem' }
   };
 
   return (
@@ -21,7 +24,10 @@ const AppRoutes = () => {
       <main style={styles.container}>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          {/* Add other routes here later */}
+          <Route path="/submit-complaint" element={<SubmitComplaintPage />} />
+          <Route path="/track-status" element={<TrackStatusPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
         </Routes>
       </main>
       <Footer />
