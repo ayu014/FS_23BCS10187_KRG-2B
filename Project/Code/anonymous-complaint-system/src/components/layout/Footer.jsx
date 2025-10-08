@@ -39,10 +39,10 @@ const Footer = () => {
               <a href="https://twitter.com" target="_blank" rel="noreferrer">
                 <FaTwitter />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noreferrer">
+              <a href="https://linkedin.com/in/ayu014" target="_blank" rel="noreferrer">
                 <FaLinkedin />
               </a>
-              <a href="https://github.com" target="_blank" rel="noreferrer">
+              <a href="https://github.com/ayu014" target="_blank" rel="noreferrer">
                 <FaGithub />
               </a>
             </div>
