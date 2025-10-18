@@ -1,45 +1,66 @@
 // src/services/api.js
 
-import { mockComplaints } from '../constants/mockData';
+const API_BASE_URL = 'http://localhost:8080/api';
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-// This function should already be here
+// Function to submit a new complaint
 export const submitComplaint = async (complaintData) => {
-  // ... (existing code)
-  await sleep(500);
-  const newComplaint = {
-    id: `TKT-2025-${Math.floor(Math.random() * 1000)}`,
-    ...complaintData,
-    status: 'Submitted',
-    submittedAt: new Date().toISOString(),
-  };
-  return { success: true, complaint: newComplaint };
-};
-
-// --- ADD THE NEW FUNCTIONS BELOW ---
-
-// Function to find a single complaint by its ID
-export const getComplaintStatus = async (complaintId) => {
-  await sleep(500);
-  const complaint = mockComplaints.find(c => c.id === complaintId);
-  if (complaint) {
-    return { success: true, complaint };
+  try {
+    const response = await fetch(`${API_BASE_URL}/complaints`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(complaintData),
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const newComplaint = await response.json();
+    return { success: true, complaint: newComplaint };
+  } catch (error) {
+    console.error('Error submitting complaint:', error);
+    return { success: false, message: 'Failed to submit complaint.' };
   }
-  return { success: false, message: 'Complaint ID not found.' };
 };
 
-// Function to simulate admin login
+// Function to get a complaint's status by ID
+export const getComplaintStatus = async (complaintId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/complaints/${complaintId}`);
+    if (response.status === 404) {
+      return { success: false, message: 'Complaint ID not found.' };
+    }
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const complaint = await response.json();
+    return { success: true, complaint };
+  } catch (error) {
+    console.error('Error fetching complaint status:', error);
+    return { success: false, message: 'Failed to fetch status.' };
+  }
+};
+
+// Function to get all complaints for the admin dashboard
+export const getAllComplaints = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/complaints`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const complaints = await response.json();
+    return { success: true, complaints };
+  } catch (error) {
+    console.error('Error fetching all complaints:', error);
+    return { success: false, message: 'Failed to fetch complaints.' };
+  }
+};
+
+// Admin login can remain a mock for now, as we haven't built the backend logic for it yet.
 export const adminLogin = async (credentials) => {
-  await sleep(500);
+  console.log('Simulating admin login with:', credentials);
   if (credentials.username === 'admin' && credentials.password === 'password') {
     return { success: true, token: 'fake-jwt-token-for-testing' };
   }
   return { success: false, message: 'Invalid credentials. Try admin/password.' };
-};
-
-// Function to get all complaints for the dashboard
-export const getAllComplaints = async () => {
-  await sleep(500);
-  return { success: true, complaints: mockComplaints };
 };
