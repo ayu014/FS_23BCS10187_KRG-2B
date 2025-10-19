@@ -1,6 +1,7 @@
 package com.example.complaint_system_backend.controller;
 
 
+import com.example.complaint_system_backend.dto.UpdateComplaintRequest;
 import com.example.complaint_system_backend.model.Complaint;
 import com.example.complaint_system_backend.service.ComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,22 @@ public class ComplaintController {
         return complaintService.getComplaintById(id)
                 .map(ResponseEntity::ok) // If found, return 200 OK with the complaint
                 .orElse(ResponseEntity.notFound().build()); // If not found, return 404 Not Found
+    }
+
+    @PatchMapping("/complaints/{id}")
+    public ResponseEntity<Complaint> updateComplaint(
+            @PathVariable Long id, 
+            @RequestBody UpdateComplaintRequest request) {
+
+        return complaintService.updateComplaintStatus(id, request.getStatus(), request.getRemarks())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/complaints/track/{ticketId}")
+    public ResponseEntity<Complaint> getComplaintByTicketId(@PathVariable String ticketId) {
+        return complaintService.getComplaintByTicketId(ticketId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

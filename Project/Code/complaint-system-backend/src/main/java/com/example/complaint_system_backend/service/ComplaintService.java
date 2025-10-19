@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,11 +19,14 @@ public class ComplaintService {
     private ComplaintRepository complaintRepository;
 
     public Complaint createComplaint(Complaint complaint) {
-        // Apply business logic: set default status and current time
+        // Generate a random 8-digit number for the user-facing ticket ID
+        long randomId = ThreadLocalRandom.current().nextLong(10000000, 100000000);
+        complaint.setTicketId(String.valueOf(randomId));
+
+        // Set default status and time (existing logic)
         complaint.setStatus("Submitted");
         complaint.setSubmittedAt(LocalDateTime.now());
 
-        // Use the repository to save the complaint to the database
         return complaintRepository.save(complaint);
     }
 
@@ -34,5 +38,24 @@ public class ComplaintService {
     // Method to get a single complaint for the tracking page
     public Optional<Complaint> getComplaintById(Long id) {
         return complaintRepository.findById(id);
+    }
+
+    public Optional<Complaint> updateComplaintStatus(Long id, String status, String remarks) {
+        // Find the existing complaint by its primary key
+        Optional<Complaint> complaintOptional = complaintRepository.findById(id);
+
+        if (complaintOptional.isPresent()) {
+            Complaint complaint = complaintOptional.get();
+            complaint.setStatus(status);
+            complaint.setAdminRemarks(remarks);
+            // Save the updated complaint back to the database
+            return Optional.of(complaintRepository.save(complaint));
+        } else {
+            return Optional.empty(); // Return empty if no complaint was found
+        }
+    }
+
+    public Optional<Complaint> getComplaintByTicketId(String ticketId) {
+        return complaintRepository.findByTicketId(ticketId);
     }
 }

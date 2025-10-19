@@ -41,7 +41,7 @@ const SubmitComplaintPage = () => {
     setSubmissionStatus('submitting');
     const response = await submitComplaint(formData);
     if (response.success) {
-      setTicketId(response.complaint.id);
+      setTicketId(response.complaint.ticketId);
       setSubmissionStatus('success');
       setFormData({ title: '', description: '' }); // Clear form
     }
@@ -54,7 +54,8 @@ const SubmitComplaintPage = () => {
         <div style={styles.successMessage}>
           <h2>Complaint Submitted Successfully!</h2>
           <p>Please save your unique Complaint ID for tracking:</p>
-          <p><strong>{ticketId}</strong></p>
+          {/* THIS IS THE FIX: Use ticketId instead of id */}
+          <p><strong>{ticketId}</strong></p> 
           <Button onClick={() => setSubmissionStatus(null)}>Submit Another Complaint</Button>
         </div>
       </div>

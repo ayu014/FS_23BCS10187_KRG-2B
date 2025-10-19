@@ -24,9 +24,10 @@ export const submitComplaint = async (complaintData) => {
 };
 
 // Function to get a complaint's status by ID
-export const getComplaintStatus = async (complaintId) => {
+export const getComplaintStatus = async (ticketId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/complaints/${complaintId}`);
+    // THIS IS THE FIX: Call the new 'track' endpoint
+    const response = await fetch(`${API_BASE_URL}/complaints/track/${ticketId}`); 
     if (response.status === 404) {
       return { success: false, message: 'Complaint ID not found.' };
     }
@@ -63,4 +64,25 @@ export const adminLogin = async (credentials) => {
     return { success: true, token: 'fake-jwt-token-for-testing' };
   }
   return { success: false, message: 'Invalid credentials. Try admin/password.' };
+};
+
+
+export const updateComplaintStatus = async (id, status, remarks) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/complaints/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status, remarks }),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to update status');
+    }
+    const updatedComplaint = await response.json();
+    return { success: true, complaint: updatedComplaint };
+  } catch (error) {
+    console.error('Error updating complaint:', error);
+    return { success: false };
+  }
 };

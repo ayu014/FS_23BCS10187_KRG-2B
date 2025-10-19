@@ -1,5 +1,6 @@
 package com.example.complaint_system_backend.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +18,10 @@ public class Complaint {
     private String description;
     private String status;
     private LocalDateTime submittedAt;
+    private String adminRemarks;
+
+    @Column(unique = true) // Ensures every ticketId is unique in the database
+    private String ticketId;
 
     // Standard Java Getters and Setters are required for JPA to work.
     // Your IDE can generate these for you automatically.
@@ -31,4 +36,9 @@ public class Complaint {
     public void setStatus(String status) { this.status = status; }
     public LocalDateTime getSubmittedAt() { return submittedAt; }
     public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
-}
+    public String getTicketId() { return ticketId; }
+    public void setTicketId(String ticketId) { this.ticketId = ticketId; }
+    public String getAdminRemarks() { return adminRemarks; }
+    public void setAdminRemarks(String adminRemarks) { this.adminRemarks = adminRemarks; }
+
+    }
