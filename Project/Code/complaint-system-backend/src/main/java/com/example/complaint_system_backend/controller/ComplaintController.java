@@ -43,13 +43,14 @@ public class ComplaintController {
     }
 
     @PatchMapping("/complaints/{id}")
-    public ResponseEntity<Complaint> updateComplaint(
-            @PathVariable Long id, 
-            @RequestBody UpdateComplaintRequest request) {
-
-        return complaintService.updateComplaintStatus(id, request.getStatus(), request.getRemarks())
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Complaint> updateComplaint(@PathVariable Long id, @RequestBody UpdateComplaintRequest request) {
+        try {
+            return complaintService.updateComplaintStatus(id, request.getStatus(), request.getRemarks())
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build(); // Return a 400 error for invalid status change
+        }
     }
 
     @GetMapping("/complaints/track/{ticketId}")

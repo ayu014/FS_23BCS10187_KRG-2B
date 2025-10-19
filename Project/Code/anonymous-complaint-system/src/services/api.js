@@ -71,14 +71,10 @@ export const updateComplaintStatus = async (id, status, remarks) => {
   try {
     const response = await fetch(`${API_BASE_URL}/complaints/${id}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status, remarks }),
     });
-    if (!response.ok) {
-      throw new Error('Failed to update status');
-    }
+    if (!response.ok) { throw new Error('Failed to update status'); }
     const updatedComplaint = await response.json();
     return { success: true, complaint: updatedComplaint };
   } catch (error) {
@@ -86,3 +82,5 @@ export const updateComplaintStatus = async (id, status, remarks) => {
     return { success: false };
   }
 };
+
+

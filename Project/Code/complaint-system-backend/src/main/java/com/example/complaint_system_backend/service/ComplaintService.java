@@ -41,21 +41,27 @@ public class ComplaintService {
     }
 
     public Optional<Complaint> updateComplaintStatus(Long id, String status, String remarks) {
-        // Find the existing complaint by its primary key
-        Optional<Complaint> complaintOptional = complaintRepository.findById(id);
-
-        if (complaintOptional.isPresent()) {
-            Complaint complaint = complaintOptional.get();
+    Optional<Complaint> complaintOptional = complaintRepository.findById(id);
+    if (complaintOptional.isPresent()) {
+        Complaint complaint = complaintOptional.get();
+        String currentStatus = complaint.getStatus();
+        boolean isValidChange = (currentStatus.equals("Submitted") && status.equals("In Review")) ||
+                              (currentStatus.equals("In Review") && status.equals("Resolved"));
+        if (isValidChange) {
             complaint.setStatus(status);
             complaint.setAdminRemarks(remarks);
-            // Save the updated complaint back to the database
             return Optional.of(complaintRepository.save(complaint));
         } else {
-            return Optional.empty(); // Return empty if no complaint was found
+            throw new IllegalStateException("Invalid status change from " + currentStatus + " to " + status);
         }
+    } else {
+        return Optional.empty();
     }
+}
 
     public Optional<Complaint> getComplaintByTicketId(String ticketId) {
         return complaintRepository.findByTicketId(ticketId);
     }
+
+    
 }
