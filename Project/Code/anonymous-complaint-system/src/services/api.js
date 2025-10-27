@@ -84,3 +84,20 @@ export const updateComplaintStatus = async (id, status, remarks) => {
 };
 
 
+
+export const sendNotification = async (complaintId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/complaints/${complaintId}/notify`, {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to send notification');
+    }
+    return { success: true };
+  } catch (error) {
+    console.error('Error sending notification:', error);
+    return { success: false };
+  }
+};
+
+

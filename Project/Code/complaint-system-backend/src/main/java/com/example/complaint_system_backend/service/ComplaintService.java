@@ -3,6 +3,7 @@ package com.example.complaint_system_backend.service;
 
 import com.example.complaint_system_backend.model.Complaint;
 import com.example.complaint_system_backend.repository.ComplaintRepository;
+import com.example.complaint_system_backend.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -17,6 +18,9 @@ public class ComplaintService {
 
     @Autowired // Spring automatically provides an instance of the repository here
     private ComplaintRepository complaintRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     public Complaint createComplaint(Complaint complaint) {
         // Generate a random 8-digit number for the user-facing ticket ID
@@ -40,24 +44,55 @@ public class ComplaintService {
         return complaintRepository.findById(id);
     }
 
-    public Optional<Complaint> updateComplaintStatus(Long id, String status, String remarks) {
-    Optional<Complaint> complaintOptional = complaintRepository.findById(id);
-    if (complaintOptional.isPresent()) {
-        Complaint complaint = complaintOptional.get();
-        String currentStatus = complaint.getStatus();
-        boolean isValidChange = (currentStatus.equals("Submitted") && status.equals("In Review")) ||
-                              (currentStatus.equals("In Review") && status.equals("Resolved"));
-        if (isValidChange) {
-            complaint.setStatus(status);
-            complaint.setAdminRemarks(remarks);
-            return Optional.of(complaintRepository.save(complaint));
+//     public Optional<Complaint> updateComplaintStatus(Long id, String status, String remarks) {
+//     Optional<Complaint> complaintOptional = complaintRepository.findById(id);
+//     if (complaintOptional.isPresent()) {
+//         Complaint complaint = complaintOptional.get();
+//         String currentStatus = complaint.getStatus();
+//         boolean isValidChange = (currentStatus.equals("Submitted") && status.equals("In Review")) ||
+//                               (currentStatus.equals("In Review") && status.equals("Resolved"));
+//         if (isValidChange) {
+//             complaint.setStatus(status);
+//             complaint.setAdminRemarks(remarks);
+//             return Optional.of(complaintRepository.save(complaint));
+//         } else {
+//             throw new IllegalStateException("Invalid status change from " + currentStatus + " to " + status);
+//         }
+//     } 
+//     else {
+//         return Optional.empty();
+//     }
+// }
+    public Optional<Complaint> updateComplaintStatus(Long id, String newStatus, String remarks) {
+        Optional<Complaint> complaintOptional = complaintRepository.findById(id);
+
+        if (complaintOptional.isPresent()) {
+            Complaint complaint = complaintOptional.get();
+            String currentStatus = complaint.getStatus();
+
+            boolean isValidChange = (currentStatus.equals("Submitted") && newStatus.equals("In Review")) ||
+                                  (currentStatus.equals("In Review") && newStatus.equals("Resolved"));
+            
+            if (isValidChange) {
+                complaint.setStatus(newStatus);
+                complaint.setAdminRemarks(remarks);
+
+                // Save the complaint
+                Complaint savedComplaint = complaintRepository.save(complaint);
+
+                // 3. CALL THE EMAIL SERVICE AFTER SAVING
+                emailService.sendNotificationEmail(savedComplaint);
+
+                return Optional.of(savedComplaint);
+            } else {
+                throw new IllegalStateException("Invalid status change from " + currentStatus + " to " + newStatus);
+            }
         } else {
-            throw new IllegalStateException("Invalid status change from " + currentStatus + " to " + status);
+            return Optional.empty();
         }
-    } else {
-        return Optional.empty();
     }
-}
+
+
 
     public Optional<Complaint> getComplaintByTicketId(String ticketId) {
         return complaintRepository.findByTicketId(ticketId);

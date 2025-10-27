@@ -6,12 +6,15 @@ const ComplaintDetailModal = ({ complaint, onClose, onUpdate }) => {
   const [status, setStatus] = useState(complaint.status);
   const [remarks, setRemarks] = useState(complaint.adminRemarks || '');
 
+
+
   // This function determines the next possible status
   const getNextStatus = () => {
     if (complaint.status === 'Submitted') return 'In Review';
     if (complaint.status === 'In Review') return 'Resolved';
     return null; // If status is 'Resolved', no more changes are possible
   };
+
 
   const nextStatus = getNextStatus();
 
@@ -45,7 +48,6 @@ const ComplaintDetailModal = ({ complaint, onClose, onUpdate }) => {
             />
             <div style={styles.buttonGroup}>
               <Button onClick={() => onUpdate(complaint.id, status, remarks)}>Save Changes</Button>
-              <Button onClick={() => alert('Notification feature to be implemented!')}>Share Notification</Button>
             </div>
           </>
         ) : (

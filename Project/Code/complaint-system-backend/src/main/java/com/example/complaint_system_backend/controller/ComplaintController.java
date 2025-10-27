@@ -3,12 +3,15 @@ package com.example.complaint_system_backend.controller;
 
 import com.example.complaint_system_backend.dto.UpdateComplaintRequest;
 import com.example.complaint_system_backend.model.Complaint;
+import com.example.complaint_system_backend.email.EmailService;
 import com.example.complaint_system_backend.service.ComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api") // All URLs in this class will start with /api
@@ -17,6 +20,9 @@ public class ComplaintController {
 
     @Autowired
     private ComplaintService complaintService;
+
+    @Autowired
+    private EmailService emailService;
 
     // This method handles POST requests to http://localhost:8080/api/complaints
     @PostMapping("/complaints")
@@ -58,5 +64,17 @@ public class ComplaintController {
         return complaintService.getComplaintByTicketId(ticketId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/complaints/{id}/notify")
+    public ResponseEntity<Void> notifyUser(@PathVariable Long id) {
+        Optional<Complaint> complaintOptional = complaintService.getComplaintById(id);
+
+        if (complaintOptional.isPresent()) {
+            emailService.sendNotificationEmail(complaintOptional.get());
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

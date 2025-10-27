@@ -35,7 +35,7 @@ const SubmitComplaintPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
+2
   const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmissionStatus('submitting');
