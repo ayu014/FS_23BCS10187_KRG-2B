@@ -5,7 +5,7 @@ import Button from '../components/common/Button';
 import { submitComplaint } from '../services/api'; // Our mock API
 
 const SubmitComplaintPage = () => {
-  const [formData, setFormData] = useState({ title: '', description: '' });
+  const [formData, setFormData] = useState({ title: '', description: '', userEmail: '' });
   const [submissionStatus, setSubmissionStatus] = useState(null); // 'submitting', 'success'
   const [ticketId, setTicketId] = useState('');
 
@@ -37,15 +37,16 @@ const SubmitComplaintPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmissionStatus('submitting');
-    const response = await submitComplaint(formData);
-    if (response.success) {
-      setTicketId(response.complaint.ticketId);
-      setSubmissionStatus('success');
-      setFormData({ title: '', description: '' }); // Clear form
-    }
-  };
+        e.preventDefault();
+        setSubmissionStatus('submitting');
+        const response = await submitComplaint(formData);
+        if (response.success) {
+            setTicketId(response.complaint.ticketId);
+            setSubmissionStatus('success');
+            // Clear the form, including the new email field
+            setFormData({ title: '', description: '', userEmail: '' });
+        }
+    };
 
   // Show a success message after submission
   if (submissionStatus === 'success') {
@@ -65,33 +66,48 @@ const SubmitComplaintPage = () => {
   // Show the form by default
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Submit a Complaint Anonymously</h2>
-      <form onSubmit={handleSubmit}>
-        <Input
-          label="Complaint Title"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          placeholder="e.g., Broken equipment in the lab"
-        />
-        <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-            Complaint Description
-          </label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            style={styles.textarea}
-            placeholder="Provide a detailed description of the issue."
-            required
-          />
+            <h2 style={styles.title}>Submit a Complaint Anonymously</h2>
+            <form onSubmit={handleSubmit}>
+                <Input
+                    label="Complaint Title"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    placeholder="e.g., Broken equipment in the lab"
+                    // 'required' is implicitly true from your Input component, which is fine
+                />
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <label>Complaint Description</label>
+                    <textarea
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        style={styles.textarea}
+                        placeholder="Provide a detailed description of the issue."
+                        required
+                    />
+                </div>
+                
+                {/* --- 2. ADD THE NEW OPTIONAL EMAIL INPUT --- */}
+                <Input
+                    label="Email (Optional)"
+                    name="userEmail"
+                    type="email" // This provides browser validation
+                    value={formData.userEmail}
+                    onChange={handleChange}
+                    placeholder="Enter your email for notifications"
+                    // We don't add 'required' here, so it's optional
+                />
+                {/* Add a small note for the user */}
+                <p style={{fontSize: '0.85rem', color: '#6c757d', marginTop: '-1rem', marginBottom: '1.5rem'}}>
+                    Providing an email is optional but will allow you to be notified when your complaint is resolved.
+                </p>
+
+                <Button type="submit" disabled={submissionStatus === 'submitting'}>
+                    {submissionStatus === 'submitting' ? 'Submitting...' : 'Submit Complaint'}
+                </Button>
+            </form>
         </div>
-        <Button type="submit" disabled={submissionStatus === 'submitting'}>
-          {submissionStatus === 'submitting' ? 'Submitting...' : 'Submit Complaint'}
-        </Button>
-      </form>
-    </div>
   );
 };
 

@@ -14,6 +14,7 @@ public class Complaint {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Tells Postgres to auto-generate this ID
     private Long id;
 
+    private String userEmail;
     private String title;
     private String description;
     private String status;
@@ -40,5 +41,7 @@ public class Complaint {
     public void setTicketId(String ticketId) { this.ticketId = ticketId; }
     public String getAdminRemarks() { return adminRemarks; }
     public void setAdminRemarks(String adminRemarks) { this.adminRemarks = adminRemarks; }
+    public String getUserEmail() {return userEmail;}
+    public void setUserEmail(String userEmail) { this.userEmail = userEmail;}
 
     }
