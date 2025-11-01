@@ -43,9 +43,14 @@ export const getComplaintStatus = async (ticketId) => {
 };
 
 // Function to get all complaints for the admin dashboard
+
 export const getAllComplaints = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/complaints`);
+    const response = await fetch(`${API_BASE_URL}/complaints`, {
+      headers: {
+        'Authorization': `Bearer ${getAuthToken()}` // Add the token
+      }
+    });
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -57,21 +62,41 @@ export const getAllComplaints = async () => {
   }
 };
 
-// Admin login can remain a mock for now, as we haven't built the backend logic for it yet.
 export const adminLogin = async (credentials) => {
-  console.log('Simulating admin login with:', credentials);
-  if (credentials.username === 'admin' && credentials.password === 'password') {
-    return { success: true, token: 'fake-jwt-token-for-testing' };
-  }
-  return { success: false, message: 'Invalid credentials. Try admin/password.' };
-};
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials), // Send {username, password}
+    });
 
+    if (!response.ok) {
+      return { success: false, message: 'Invalid credentials' };
+    }
+
+    const data = await response.json(); // This will be { "token": "..." }
+    
+    // Store the real token from the backend
+    localStorage.setItem('adminToken', data.token);
+    
+    return { success: true, token: data.token };
+
+  } catch (error) {
+    console.error('Login error:', error);
+    return { success: false, message: 'An error occurred during login.' };
+  }
+};
 
 export const updateComplaintStatus = async (id, status, remarks) => {
   try {
     const response = await fetch(`${API_BASE_URL}/complaints/${id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}` // Add the token
+      },
       body: JSON.stringify({ status, remarks }),
     });
     if (!response.ok) { throw new Error('Failed to update status'); }
@@ -82,7 +107,6 @@ export const updateComplaintStatus = async (id, status, remarks) => {
     return { success: false };
   }
 };
-
 
 
 export const sendNotification = async (complaintId) => {
@@ -98,6 +122,10 @@ export const sendNotification = async (complaintId) => {
     console.error('Error sending notification:', error);
     return { success: false };
   }
+};
+
+const getAuthToken = () => {
+  return localStorage.getItem('adminToken');
 };
 
 

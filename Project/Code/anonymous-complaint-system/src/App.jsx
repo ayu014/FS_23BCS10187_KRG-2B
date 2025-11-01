@@ -1,6 +1,7 @@
 // src/App.jsx
 import React from 'react';
 import AppRoutes from './routes/AppRoutes';
+import { AuthProvider } from './context/AuthProvider';
 
 function App() {
   const styles = {
@@ -12,9 +13,12 @@ function App() {
   };
 
   return (
-    <div style={styles.app}>
-      <AppRoutes />
-    </div>
+    // 2. Wrap your app
+    <AuthProvider>
+      <div style={styles.app}>
+        <AppRoutes />
+      </div>
+    </AuthProvider>
   );
 }
 

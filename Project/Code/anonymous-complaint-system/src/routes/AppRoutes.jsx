@@ -1,7 +1,7 @@
 // src/routes/AppRoutes.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
+import ProtectedRoute from './ProtectedRoute';
 // Layout
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
@@ -23,11 +23,18 @@ const AppRoutes = () => {
       <Navbar />
       <main style={styles.container}>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/submit-complaint" element={<SubmitComplaintPage />} />
           <Route path="/track-status" element={<TrackStatusPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
-          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+
+          {/* 2. Protected Admin Route */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+            {/* You can add more admin-only routes here */}
+          </Route>
+          
         </Routes>
       </main>
       <Footer />

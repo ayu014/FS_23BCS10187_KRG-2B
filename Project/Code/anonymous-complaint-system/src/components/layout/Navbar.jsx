@@ -1,11 +1,19 @@
 // src/components/layout/Navbar.jsx
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
 const Navbar = () => {
+  const { isAuthenticated, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
+
+  const handleLogout = () => {
+    logout(); // This clears the token from context and localStorage
+    navigate('/admin/login'); // Redirect the user to the login page
+  };
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -23,44 +31,89 @@ const Navbar = () => {
             {menuOpen ? <FaTimes /> : <FaBars />}
           </button>
 
-          {/* Nav Links */}
+          {/* Nav Links: switch between user and admin views */}
           <ul className={`navbar-links ${menuOpen ? 'active' : ''}`}>
-            <li>
-              <Link
-                to="/"
-                className={location.pathname === '/' ? 'active' : ''}
-                onClick={() => setMenuOpen(false)}
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/submit-complaint"
-                className={location.pathname === '/submit-complaint' ? 'active' : ''}
-                onClick={() => setMenuOpen(false)}
-              >
-                Submit Complaint
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/track-status"
-                className={location.pathname === '/track-status' ? 'active' : ''}
-                onClick={() => setMenuOpen(false)}
-              >
-                Track Status
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/admin/login"
-                className={location.pathname === '/admin/login' ? 'active' : ''}
-                onClick={() => setMenuOpen(false)}
-              >
-                Admin
-              </Link>
-            </li>
+            {!isAuthenticated ? (
+              // Regular user navigation
+              <>
+                <li>
+                  <Link
+                    to="/"
+                    className={location.pathname === '/' ? 'active' : ''}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/submit-complaint"
+                    className={location.pathname === '/submit-complaint' ? 'active' : ''}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Submit Complaint
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/track-status"
+                    className={location.pathname === '/track-status' ? 'active' : ''}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Track Status
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/login"
+                    className={location.pathname === '/admin/login' ? 'active' : ''}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Admin
+                  </Link>
+                </li>
+              </>
+            ) : (
+              // Admin navigation: only the things an admin needs
+              <>
+                <li>
+                  <Link
+                    to="/admin/dashboard"
+                    className={location.pathname.startsWith('/admin/dashboard') ? 'active' : ''}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/complaints"
+                    className={location.pathname === '/admin/complaints' ? 'active' : ''}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Complaints
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/users"
+                    className={location.pathname === '/admin/users' ? 'active' : ''}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Users
+                  </Link>
+                </li>
+                <li>
+                  {/* Logout as a button so we can call logout logic directly */}
+                  <button
+                    className="logout-link"
+                    onClick={() => { setMenuOpen(false); handleLogout(); }}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </nav>
@@ -134,6 +187,23 @@ const Navbar = () => {
         .navbar-links a.active {
           background-color: #008f7e;
           color: #fff;
+        }
+
+        /* Logout button styled like links */
+        .logout-link {
+          background: none;
+          border: none;
+          color: #333;
+          font-weight: 500;
+          padding: 0.5rem 1rem;
+          border-radius: 0.5rem;
+          cursor: pointer;
+        }
+
+        .logout-link:hover {
+          background-color: #ff6b6b;
+          color: #fff;
+          transform: translateY(-2px);
         }
 
         /* Hamburger */

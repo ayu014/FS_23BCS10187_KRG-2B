@@ -1,15 +1,19 @@
 // src/pages/AdminLoginPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
-import { adminLogin } from '../services/api';
+// import { adminLogin } from '../services/api'; -- no use of this import
+import { useAuth } from '../hooks/useAuth';
 
 const AdminLoginPage = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const { login, isAuthenticated } = useAuth();
+
 
   const styles = {
     container: {
@@ -23,6 +27,14 @@ const AdminLoginPage = () => {
     title: { textAlign: 'center' }
   };
 
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/admin/dashboard');
+    }
+  }, [isAuthenticated, navigate])
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials(prev => ({ ...prev, [name]: value }));
@@ -32,11 +44,11 @@ const AdminLoginPage = () => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    const response = await adminLogin(credentials);
+    const response = await login(credentials.username, credentials.password);
     if (response.success) {
       navigate('/admin/dashboard'); // Redirect on successful login
     } else {
-      setError(response.message);
+      setError(response.message || 'Invalid credentials');
     }
     setIsLoading(false);
   };
