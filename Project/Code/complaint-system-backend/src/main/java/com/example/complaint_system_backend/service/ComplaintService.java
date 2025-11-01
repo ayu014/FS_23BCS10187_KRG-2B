@@ -2,6 +2,7 @@ package com.example.complaint_system_backend.service;
 
 
 import com.example.complaint_system_backend.model.Complaint;
+import com.example.complaint_system_backend.dto.ComplaintStatsDTO;
 import com.example.complaint_system_backend.repository.ComplaintRepository;
 import com.example.complaint_system_backend.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,25 +45,7 @@ public class ComplaintService {
         return complaintRepository.findById(id);
     }
 
-//     public Optional<Complaint> updateComplaintStatus(Long id, String status, String remarks) {
-//     Optional<Complaint> complaintOptional = complaintRepository.findById(id);
-//     if (complaintOptional.isPresent()) {
-//         Complaint complaint = complaintOptional.get();
-//         String currentStatus = complaint.getStatus();
-//         boolean isValidChange = (currentStatus.equals("Submitted") && status.equals("In Review")) ||
-//                               (currentStatus.equals("In Review") && status.equals("Resolved"));
-//         if (isValidChange) {
-//             complaint.setStatus(status);
-//             complaint.setAdminRemarks(remarks);
-//             return Optional.of(complaintRepository.save(complaint));
-//         } else {
-//             throw new IllegalStateException("Invalid status change from " + currentStatus + " to " + status);
-//         }
-//     } 
-//     else {
-//         return Optional.empty();
-//     }
-// }
+
     public Optional<Complaint> updateComplaintStatus(Long id, String newStatus, String remarks) {
         Optional<Complaint> complaintOptional = complaintRepository.findById(id);
 
@@ -93,6 +76,14 @@ public class ComplaintService {
     }
 
 
+    public ComplaintStatsDTO getComplaintStats() {
+        long submitted = complaintRepository.countByStatus("Submitted");
+        long inReview = complaintRepository.countByStatus("In Review");
+        long resolved = complaintRepository.countByStatus("Resolved");
+
+        return new ComplaintStatsDTO(submitted, inReview, resolved);
+    }
+    
 
     public Optional<Complaint> getComplaintByTicketId(String ticketId) {
         return complaintRepository.findByTicketId(ticketId);
@@ -100,3 +91,5 @@ public class ComplaintService {
 
     
 }
+
+

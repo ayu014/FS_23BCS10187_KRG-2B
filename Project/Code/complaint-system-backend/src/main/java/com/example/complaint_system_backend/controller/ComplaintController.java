@@ -2,6 +2,7 @@ package com.example.complaint_system_backend.controller;
 
 
 import com.example.complaint_system_backend.dto.UpdateComplaintRequest;
+import com.example.complaint_system_backend.dto.ComplaintStatsDTO;
 import com.example.complaint_system_backend.model.Complaint;
 import com.example.complaint_system_backend.email.EmailService;
 import com.example.complaint_system_backend.service.ComplaintService;
@@ -76,5 +77,10 @@ public class ComplaintController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/admin/stats")
+    public ComplaintStatsDTO getStats() {
+        return complaintService.getComplaintStats();
     }
 }

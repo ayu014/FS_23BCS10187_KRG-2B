@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     // This interface is intentionally blank. Spring Data JPA provides all the necessary methods.
     Optional<Complaint> findByTicketId(String ticketId);
+
+    long countByStatus(String status);
 }
