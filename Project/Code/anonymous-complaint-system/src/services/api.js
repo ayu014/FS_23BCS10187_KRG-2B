@@ -1,7 +1,8 @@
 // src/services/api.js
 
-const API_BASE_URL = 'http://localhost:8080/api';
-
+// const API_BASE_URL = 'http://localhost:8080/api';
+// 
+const API_BASE_URL = 'https://complaint-yfn1.onrender.com/api';
 // Function to submit a new complaint
 export const submitComplaint = async (complaintData) => {
   try {
@@ -123,6 +124,26 @@ export const sendNotification = async (complaintId) => {
     return { success: false };
   }
 };
+
+
+export const getDashboardStats = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/stats`, {
+      headers: {
+        'Authorization': `Bearer ${getAuthToken()}` // Send the token
+      }
+    });
+    if (!response.ok) {
+      throw new Error('Could not fetch stats');
+    }
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    return { success: false };
+  }
+};
+
 
 const getAuthToken = () => {
   return localStorage.getItem('adminToken');

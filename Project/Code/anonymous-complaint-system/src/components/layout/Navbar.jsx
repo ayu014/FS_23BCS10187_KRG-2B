@@ -87,14 +87,14 @@ const Navbar = () => {
                 </li>
                 <li>
                   <Link
-                    to="/admin/complaints"
-                    className={location.pathname === '/admin/complaints' ? 'active' : ''}
+                   to="/admin/complaints"
+                   
+                   className={location.pathname.startsWith('/admin/complaints') ? 'active' : ''}
                     onClick={() => setMenuOpen(false)}
-                  >
-                    Complaints
-                  </Link>
+                    >Complaints</Link></li>
+                <li>  
                 </li>
-                <li>
+                {/* <li>
                   <Link
                     to="/admin/users"
                     className={location.pathname === '/admin/users' ? 'active' : ''}
@@ -102,7 +102,7 @@ const Navbar = () => {
                   >
                     Users
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   {/* Logout as a button so we can call logout logic directly */}
                   <button

@@ -12,6 +12,7 @@ import SubmitComplaintPage from '../pages/SubmitComplaintPage';
 import TrackStatusPage from '../pages/TrackStatusPage';
 import AdminLoginPage from '../pages/AdminLoginPage';
 import AdminDashboardPage from '../pages/AdminDashboardPage';
+import ComplaintListPage from '../pages/ComplaintListPage';
 
 const AppRoutes = () => {
   const styles = {
@@ -32,6 +33,7 @@ const AppRoutes = () => {
           {/* 2. Protected Admin Route */}
           <Route element={<ProtectedRoute />}>
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+            <Route path="/admin/complaints" element={<ComplaintListPage />} />
             {/* You can add more admin-only routes here */}
           </Route>
           
