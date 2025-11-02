@@ -2,7 +2,7 @@
 
 // const API_BASE_URL = 'http://localhost:8080/api';
 // 
-const API_BASE_URL = 'https://complaint-yfn1.onrender.com/api';
+const API_BASE_URL = 'https://acrs-backend.onrender.com/api';
 // Function to submit a new complaint
 export const submitComplaint = async (complaintData) => {
   try {
