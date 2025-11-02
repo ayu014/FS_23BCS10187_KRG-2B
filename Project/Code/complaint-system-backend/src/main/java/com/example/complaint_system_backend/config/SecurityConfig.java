@@ -33,7 +33,10 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
-                .requestMatchers(HttpMethod.GET, "/").permitAll() //- for uptime so that it can keep awake the backend
+                //- for uptime so that it can keep awake the backend
+                .requestMatchers(HttpMethod.GET, "/", "/**").permitAll() // Allows GET on root
+                .requestMatchers(HttpMethod.HEAD, "/", "/**").permitAll() // ALSO allows HEAD on root
+                
                 .requestMatchers(HttpMethod.POST, "/api/admin/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/complaints").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/complaints/track/**").permitAll()
