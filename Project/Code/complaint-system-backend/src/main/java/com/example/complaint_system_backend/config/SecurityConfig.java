@@ -33,6 +33,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
+                .requestMatchers(HttpMethod.GET, "/").permitAll() //- for uptime so that it can keep awake the backend
                 .requestMatchers(HttpMethod.POST, "/api/admin/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/complaints").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/complaints/track/**").permitAll()
