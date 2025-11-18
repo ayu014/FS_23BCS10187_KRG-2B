@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>App -> Parent -> Child Demo</title>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+
+    function App() {
+      const msg = 'Hello from App (msg prop)';
+      return (
+        <div style={{ fontFamily: 'Arial, sans-serif', margin: 20 }}>
+          <h3>App → Parent → Child (prop passing)</h3>
+          <Parent msg={msg} />
+        </div>
+      );
+    }
+
+
+    function Parent({ msg }) {
+      return (
+        <div style={{ paddingLeft: 10 }}>
+          <p><strong>Parent:</strong> forwarding message to Child</p>
+          <Child msg={msg} />
+        </div>
+      );
+    }
+
+    function Child({ msg }) {
+      return (
+        <div style={{ paddingLeft: 20, color: '#064e3b' }}>
+          <p><strong>Child received msg:</strong> {msg}</p>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

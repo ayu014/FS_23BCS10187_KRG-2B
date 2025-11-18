@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Employee List</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+
+    function EmployeeList() {
+      const [filter, setFilter] = React.useState('');
+
+      const employees = [
+        'Alice',
+        "Ayush",
+        'Bob',
+        "Bhavya",
+        "Bravo",
+        'Charlie',
+        'David',
+        'Eve',
+        'Frank',
+        'Grace'
+      ];
+
+ 
+      const filtered = employees.filter(name =>
+        name.toLowerCase().startsWith(filter.trim().toLowerCase())
+      );
+
+      return (
+        <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: 420, margin: 20 }}>
+          <h3>Employee Names</h3>
+          <input
+            type="text"
+            placeholder="Type to filter (starts with)"
+            value={filter}
+            onChange={e => setFilter(e.target.value)}
+            style={{ padding: '6px 8px', width: '100%', boxSizing: 'border-box', marginBottom: 10 }}
+          />
+          <ul>
+            {filtered.map((name, idx) => (
+              <li key={idx}>{name}</li>
+            ))}
+            {filtered.length === 0 && <li>No matching names</li>}
+          </ul>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<EmployeeList />);
+  </script>
+</body>
+</html>

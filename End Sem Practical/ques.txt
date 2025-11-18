@@ -1,0 +1,4 @@
+Create a react componet that displays the list of employee name from an array. Add a filter inoout that displays only names starting with the typed text.
+
+
+2. Create three components , App-> Parent-> Child. Pass a msg prop from App to Child and display it in the child components
